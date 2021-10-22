@@ -1,0 +1,27 @@
+Plotter Architecture
+
+For each type of dataset, we need:
+	
+	- a valid filename checker
+		- need dictionary for the right file length for each dataset type
+		- develop check for 60 in seconds place and generate without
+
+		-separately, we need a function to parse the filename
+			-extracts facility and data type from filename
+
+	- a data yoinker
+		-needs to be passed a reference to the dataset type so it can execute the code specific to that dataset
+
+	- a quicklook creator/saver
+		- needs a dict of dicts for each dataset type
+			- see line 96 of Plotter_old.py for reference
+			- each dataset has params for each variable in dataset
+		- needs a function that can be passed the file name and spit out quicklook naming scheme
+		- needs a dict of dump directory paths
+
+	- main function
+		- accesses a dictionary of data folder paths specific to each dataset type
+		- loops through all filenames in that directory and checks if valid
+			- appends to a list of good paths
+		- loops through good paths and creates quicklooks
+			- creates a log file if any files don't work
