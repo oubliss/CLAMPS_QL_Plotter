@@ -136,6 +136,46 @@ def yoink_the_data(dataset, data_type):
              'bSc': backscatter, 'bSc_TALL' : backscatter_TALL,
              'height_FULL': height, 'height': height_CUT}
 
+    if data_type == "aeri":
+        
+        #get the times
+        time = [datetime.utcfromtimestamp(d) for d in (dataset['base_time'][:]+dataset['time_offset'][:])]
+        
+        #sort the times
+        sort = np.argsort(time)
+        time = np.array(time)[sort]
+        
+        #get sorted data sources
+        temp = dataset["temperature"][sort]
+        ptemp = dataset["theta"][sort]
+        dewpt = dataset["dewpt"][sort]
+        height = dataset["height"][:] * 1000        
+ 
+        #cbh and quality flag
+        cbh = dataset["cbh"][:] * 1000
+        qcflag = dataset["qc_flag"][:]
+        
+        #find the index nearest 2500m
+        max_height_idx = 0
+        MAX_HEIGHT = 2500
+        for hgt in height:
+            if(hgt >=  MAX_HEIGHT):
+                break
+            max_height_idx += 1
+        
+        
+        #remove first two gates
+        height = height[2:max_height_idx]
+        temp = temp[:, 2:max_height_idx]
+        ptemp = ptemp[: 2:max_height_idx]
+        dewpt = dewpt[:, 2:max_height_idx]
+
+        return {"time": time, 'height': height, "cbh": cbh,
+                "temp": temp, "ptemp": ptemp, "dewpt": dewpt,
+                "qcflag": qcflag}
+        
+        
+        
 time_formatting = "%Y%m%d"
 def create_quicklook(data_type, data, timeGrid, heightGrid, date, name_info, #name info should be a
                      figHeight = 5, figWidth =15):                           #list with [facility, file_type]
