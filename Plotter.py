@@ -16,7 +16,7 @@ import math
 #plotter-specific functions and dicts
 from timeheight import timeheight
 from info_dicts import valid_filename_info, data_info, file_paths
-from helper_functions import uv_from_spd_dir, get_QL_name
+from helper_functions import uv_from_spd_dir, get_QL_name, get_snr_cutoff
 
 #TODO: this needs to be fleshed out into a regex function to get the filename parameters
 #use in to access data type i.ie. if "dlvad" in filename
@@ -42,43 +42,24 @@ def parse_filename(filename):
         
         
 #valid filename checker
-def is_valid_file(data_filename, file_type):
+def is_valid_file(data_filename):
     
     #checks whether file is a netCDF4 file
-    is_cdf = "cdf" in data_filename
-    
-    file_len = len(data_filename)
-    #checks for correct length based on dict of lengths
-    if file_type == 'dlVAD':
+    is_cdf = "cdf" == data_filename[-3:]
+    if is_cdf:
         
-        turner_len = valid_filename_info[file_type]["file_length"][0]
-        norm_len = valid_filename_info[file_type]["file_length"][1] 
-        is_right_len = file_len == turner_len or file_len == norm_len
-        
-        if is_right_len:
-            correct_len = file_len
-    
-    else:
-        is_right_len = file_len == valid_filename_info[file_type]["file_length"]
-    
-    #so we know it's a good file, but stuff can still go wrong
-    if is_cdf and is_right_len:
-        
-        #checks for 60 in seconds place which needs to be handled by hand
-        sec_idx0 = correct_len - 6
-        sec_idx1 = correct_len - 4
-        sec_str = data_filename[sec_idx0:sec_idx1]
-        
-        has_valid_time = int(sec_str) < 60 and int(sec_str) >=0
-        
-        if has_valid_time:
+        #checks for error where seconds can be 60
+        file_seconds = int(data_filename[-6:-4])        
+        if file_seconds < 60 and file_seconds >=0:
             return True
-    else:
-        return False
+        
 
 #data accessor function
 #returns dictionary of all relevant data from dataset
 def yoink_the_data(dataset, data_type):
+    
+    #for debugging pruposes
+    print("accessing data")
     
     if data_type == 'dlVAD':
         #get the times
@@ -109,43 +90,49 @@ def yoink_the_data(dataset, data_type):
     
     if data_type == 'dlfp':
         #get the times
-    	time = [datetime.utcfromtimestamp(ts) for ts in dataset['base_time'][:]+dataset['time_offset'][:]]
+        time = [datetime.utcfromtimestamp(ts) for ts in dataset['base_time'][:]+dataset['time_offset'][:]]
     
-    	#sort the times
-    	sort = np.argsort(time) #this gives the indices that would sort the time array
-    	time = np.array(time)[sort]
+        #sort the times
+        sort = np.argsort(time) #this gives the indices that would sort the time array
+        time = np.array(time)[sort]
     
-    	#get sorted data sources
-    	w = dataset['velocity'][sort]
-    	intensity = dataset['intensity'][sort]
-    	backscatter_TALL = dataset['backscatter'][sort]
-    	height = dataset['height'][:] * 1000 #conversion to meters
-    	
-    	#converting backscatter data to logarithmic space
-    	for i in range(len(backscatter_TALL)):
-    		for j in range(len(backscatter_TALL[i])):
-    			if backscatter_TALL[i][j] > 0:
-    				backscatter_TALL[i][j] = math.log10(backscatter_TALL[i][j])
-    			else:
-    				backscatter_TALL[i][j] = np.nan
+        #get sorted data sources
+        w = dataset['velocity'][sort]
+        intensity = dataset['intensity'][sort]
+        backscatter_TALL = dataset['backscatter'][sort]
+        height = dataset['height'][:] * 1000 #conversion to meters
+        
+        #computes a dynamic snr cutoff 
+        snr_cutoff = get_snr_cutoff(dataset)
+        
+        #find the index nearest 2500m
+        max_height_idx = 0
+        MAX_HEIGHT = 2500
+        for hgt in height:
+            if(hgt >=  MAX_HEIGHT):
+                break
+            max_height_idx += 1
+        
+        #converting backscatter data to logarithmic space and filtering by snr
+        for i in range(len(backscatter_TALL)):
+            for j in range(len(backscatter_TALL[i])):
+                if backscatter_TALL[i][j] > 0:
+                    backscatter_TALL[i][j] = math.log10(backscatter_TALL[i][j])
+                else:
+                    backscatter_TALL[i][j] = np.nan
+                if j < max_height_idx:
+                        if intensity[i][j] < snr_cutoff:
+                            w[i][j] = np.nan  
+                            
+        #ignore the first two gates of the doppler lidar and stop at 2500m
+        height = height[2:]
+        height_CUT = height[:max_height_idx-2] #the -2 is to compensate for the earlier cut
+        w = w[:, 2:max_height_idx]
+        intensity = intensity[:, 2:max_height_idx]
+        backscatter_TALL = backscatter_TALL[:, 2:]
+        backscatter = backscatter_TALL[:, :max_height_idx-2]
     
-    	#find the index nearest 2500m
-    	max_height_idx = 0
-    	MAX_HEIGHT = 2500
-    	for hgt in height:
-    		if(hgt >=  MAX_HEIGHT):
-    			break
-    		max_height_idx += 1
-    	
-    	#ignore the first two gates of the doppler lidar and stop at 2500m
-    	height = height[2:]
-    	height_CUT = height[:max_height_idx-2] #the -2 is to compensate for the earlier cut
-    	w = w[:, 2:max_height_idx]
-    	intensity = intensity[:, 2:max_height_idx]
-    	backscatter_TALL = backscatter_TALL[:, 2:]
-    	backscatter = backscatter_TALL[:, :max_height_idx-2]
-    
-    	return {"time": time, 'w': w, 'snr': intensity,
+        return {"time": time, 'w': w, 'snr': intensity,
              'bSc': backscatter, 'bSc_TALL' : backscatter_TALL,
              'height_FULL': height, 'height': height_CUT}
 
