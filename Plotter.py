@@ -84,9 +84,12 @@ def yoink_the_data(dataset, data_type):
         u, v = uv_from_spd_dir(wspd, wdir)
         
         #returns dictionary of all required data
-        return {"time": time, 'height': height,
-                'wSpd': wspd, 'wDir' : wdir,
-                'u' : u, 'v' : v}
+        return {"time": time,
+                'height': height,
+                'wSpd': wspd,
+                'wDir' : wdir,
+                'u' : u,
+                'v' : v}
     
     if data_type == 'dlfp':
         #get the times
@@ -132,9 +135,13 @@ def yoink_the_data(dataset, data_type):
         backscatter_TALL = backscatter_TALL[:, 2:]
         backscatter = backscatter_TALL[:, :max_height_idx-2]
     
-        return {"time": time, 'w': w, 'snr': intensity,
-             'bSc': backscatter, 'bSc_TALL' : backscatter_TALL,
-             'height_FULL': height, 'height': height_CUT}
+        return {"time": time,
+                'w': w,
+                'snr': intensity,
+                'bSc': backscatter,
+                'bSc_TALL' : backscatter_TALL,
+                'height_FULL': height,
+                'height': height_CUT}
 
     if data_type == "aeri":
         
@@ -170,14 +177,18 @@ def yoink_the_data(dataset, data_type):
         ptemp = ptemp[: 2:max_height_idx]
         dewpt = dewpt[:, 2:max_height_idx]
 
-        return {"time": time, 'height': height, "cbh": cbh,
-                "temp": temp, "ptemp": ptemp, "dewpt": dewpt,
+        return {"time": time,
+                'height': height,
+                "cbh": cbh,
+                "temp": temp,
+                "ptemp": ptemp,
+                "dewpt": dewpt,
                 "qcflag": qcflag}
         
         
         
 time_formatting = "%Y%m%d"
-def create_quicklook(data_type, data, timeGrid, heightGrid, date, name_info, #name info should be a
+def create_quicklook(data_type, data, date, name_info, #name info should be a
                      figHeight = 5, figWidth =15):                           #list with [facility, file_type]
       
     #create figure and set dimensions
@@ -185,11 +196,17 @@ def create_quicklook(data_type, data, timeGrid, heightGrid, date, name_info, #na
     fig.set_figheight(figHeight)
     fig.set_figwidth(figWidth)
 
+    #make grid
+    if data_type = "bSc_TALL":
+        timeGrid, heightGrid = np.meshgrid(data["time"], data["height_FULL"])
+    else:
+        timeGrid, heightGrid = np.meshgrid(data["time"], data["height"])
+    
     #use timeheight function to plot data
     ax = timeheight(timeGrid, heightGrid, data[data_type].transpose(), data_type, ax=ax,
                     datamin = data_info[data_type]['datamin'],
                     datamax = data_info[data_type]['datamax'],
-                    zmin = 0, zmax = 2500)
+                    zmin = 0, zmax = 2500, zorder = 1)
     
     if data_type == 'wDir':
         
@@ -208,7 +225,12 @@ def create_quicklook(data_type, data, timeGrid, heightGrid, date, name_info, #na
                  heightGrid[::skipx, ::skipy],
                  u.transpose()[::skipx, ::skipy],
                  v.transpose()[::skipx, ::skipy])
-        
+    
+    #adding cbh
+    if data_type == 'temp' or data_type == 'ptemp':
+        ax.plot(time, cbh, linestyle = "-", markersize = 20, linewidth = 6, color = 'pink', zorder = 2)
+    elif data_type == 'dewpt':
+        ax.plot(time, cbh, linestyle = "-", markersize = 20, linewidth = 6, color = '#90ee90', zorder = 2)
     
     #setting x-axis limits
     seed_date = timeGrid[0][0].date()
@@ -235,6 +257,9 @@ def create_quicklook(data_type, data, timeGrid, heightGrid, date, name_info, #na
     
     #close the plot
     plt.close()
+    
+        
+        
     
     
     
