@@ -16,33 +16,6 @@ from timeheight import timeheight
 from info_dicts import data_info, file_paths
 from helper_functions import uv_from_spd_dir, get_QL_name, get_snr_cutoff
 
-#TODO: this needs to be fleshed out into a regex function to get the filename parameters
-#use in to access data type i.ie. if "dlvad" in filename
-#go backwards for facility
-def parse_filename(filename):
-    
-    #ignoring non-data files
-    if "cdf" in filename:
-
-        facility = filename[-25:-23] # C1 or C2
-        
-        if facility == "C1":
-            if "dlfp" in filename:
-                return ["C1", "dlfp"]
-            elif "dlvad" in filename:
-                return ["C1", "dlVAD"]
-            elif "aerioe" in filename:
-                return ["C1", "aerioe"]
-        
-        if facility == "C2":
-            if "dlfp" in filename:
-                return ["C2", "dlfp"]
-            elif "dlvad" in filename:
-                return ["C2", "dlVAD"]
-            elif "aerioe" in filename:
-                return ["C2", "aerioe"]
-        
-        
 #valid filename checker
 def is_valid_file(data_filename):
     
@@ -54,7 +27,15 @@ def is_valid_file(data_filename):
         file_seconds = int(data_filename[-6:-4])        
         if file_seconds < 60 and file_seconds >=0:
             return True
-        
+
+def date_from_filename(data_filename):
+    
+    date_string = data_filename[-19:-11]
+    string_time_formatting = "%Y%m%d"
+    date = datetime.strptime(date_string, string_time_formatting)
+    
+    return date
+            
 
 #data accessor function
 #returns dictionary of all relevant data from dataset
