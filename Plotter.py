@@ -9,13 +9,11 @@ Created on Thu Oct 14 19:22:36 2021
 import numpy as np
 from datetime import datetime, timedelta
 from matplotlib import pyplot as plt
-import os
-from netCDF4 import Dataset
 import math
 
 #plotter-specific functions and dicts
 from timeheight import timeheight
-from info_dicts import valid_filename_info, data_info, file_paths
+from info_dicts import data_info, file_paths
 from helper_functions import uv_from_spd_dir, get_QL_name, get_snr_cutoff
 
 #TODO: this needs to be fleshed out into a regex function to get the filename parameters
@@ -33,12 +31,16 @@ def parse_filename(filename):
                 return ["C1", "dlfp"]
             elif "dlvad" in filename:
                 return ["C1", "dlVAD"]
+            elif "aerioe" in filename:
+                return ["C1", "aerioe"]
         
         if facility == "C2":
             if "dlfp" in filename:
                 return ["C2", "dlfp"]
             elif "dlvad" in filename:
                 return ["C2", "dlVAD"]
+            elif "aerioe" in filename:
+                return ["C2", "aerioe"]
         
         
 #valid filename checker
@@ -143,7 +145,7 @@ def yoink_the_data(dataset, data_type):
                 'height_FULL': height,
                 'height': height_CUT}
 
-    if data_type == "aeri":
+    if data_type == "aerioe":
         
         #get the times
         time = [datetime.utcfromtimestamp(d) for d in (dataset['base_time'][:]+dataset['time_offset'][:])]
@@ -197,7 +199,7 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
     fig.set_figwidth(figWidth)
 
     #make grid
-    if data_type = "bSc_TALL":
+    if data_type == "bSc_TALL":
         timeGrid, heightGrid = np.meshgrid(data["time"], data["height_FULL"])
     else:
         timeGrid, heightGrid = np.meshgrid(data["time"], data["height"])
@@ -227,11 +229,33 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
                  v.transpose()[::skipx, ::skipy])
     
     #adding cbh
-    if data_type == 'temp' or data_type == 'ptemp':
-        ax.plot(time, cbh, linestyle = "-", markersize = 20, linewidth = 6, color = 'pink', zorder = 2)
-    elif data_type == 'dewpt':
-        ax.plot(time, cbh, linestyle = "-", markersize = 20, linewidth = 6, color = '#90ee90', zorder = 2)
+    def qc_cbh(data): #returns good and maybe indices for cbh based on qcflag
+        good_cbh_indices = []
+        skeptic_cbh_indices = []
+        for i in range(len(data["cbh"])):
+            if data["qcflag"][i] == 0:
+                good_cbh_indices.append(i)
+            elif data["qcflag"][i] == 3:
+                skeptic_cbh_indices.append(i)
+        
+        return {
+                "good_cbh_indices":good_cbh_indices,
+                "skeptic_cbh_indices":skeptic_cbh_indices
+                }
     
+    if data_type == 'temp' or data_type == 'ptemp':
+        cbh_indices = qc_cbh(data)
+        ax.plot(data["time"][cbh_indices["good_cbh_indices"]], data["cbh"][cbh_indices["good_cbh_indices"]],
+                linestyle = "None", markersize = 10, color = 'pink', zorder = 2)
+        ax.plot(data["time"][cbh_indices["skeptic_cbh_indices"]], data["cbh"][cbh_indices["skeptic_cbh_indices"]],
+                linestyle = "None", markersize = 10, color = 'pink', zorder = 3)
+        
+    elif data_type == 'dewpt':
+        cbh_indices = qc_cbh(data)
+        ax.plot(data["time"][cbh_indices["good_cbh_indices"]], data["cbh"][cbh_indices["good_cbh_indices"]],
+                linestyle = "None", markersize = 10, color = '90ee90', zorder = 2)
+        ax.plot(data["time"][cbh_indices["skeptic_cbh_indices"]], data["cbh"][cbh_indices["skeptic_cbh_indices"]],
+                linestyle = "None", markersize = 10, color = '90ee90', zorder = 3)    
     #setting x-axis limits
     seed_date = timeGrid[0][0].date()
     start_datetime = datetime(year = seed_date.year,
