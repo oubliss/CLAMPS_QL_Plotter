@@ -11,19 +11,21 @@ import matplotlib.pyplot as plt
 
 
 #tyler's timeheight function
+#tyler's timeheight function
 cmaps = {
-    'w':  {'cm': 'seismic',   'label': 'vertical velocity [m/s]'},
-    'wSpd': {'cm': 'gist_stern_r',              'label': 'windspeed [m/s]'},
-    'wDir': {'cm': cmocean.cm.phase,   'label': 'wind direction [deg]'},
-    'pt': {'cm': cmocean.cm.thermal, 'label': 'potential temperature [C]'},
-    't': {'cm': cmocean.cm.thermal, 'label': 'temperature [C]'},
-    'q':  {'cm': cmocean.cm.haline_r,  'label': 'q [g/kg]'},
-    'dp': {'cm': cmocean.cm.haline_r,  'label': 'dewpoint [C]'},
-    'rh': {'cm': cmocean.cm.haline_r,  'label': 'RH [%]'},
-    'std': {'cm': cmocean.cm.thermal,  'label': 'Standard Deviation'},
-    'bSc': {'cm': 'magma', 'label': 'Backscatter [log(10) space]'},
+    'w'     : {'cm': 'seismic',   'label': 'vertical velocity [m/s]'},
+    'wSpd'  : {'cm': 'gist_stern_r',              'label': 'windspeed [m/s]'},
+    'wDir'  : {'cm': cmocean.cm.phase,   'label': 'wind direction [deg]'},
+    'pt'    : {'cm': cmocean.cm.thermal, 'label': 'potential temperature [C]'},
+    'temp'  : {'cm': cmocean.cm.thermal, 'label': 'temperature [C]'},
+    'ptemp' : {'cm': cmocean.cm.thermal, 'label': 'potential temperature [C]'},
+    'q'     : {'cm': cmocean.cm.haline_r,  'label': 'q [g/kg]'},
+    'dewpt' : {'cm': cmocean.cm.haline_r,  'label': 'dewpoint [C]'},
+    'rh'    : {'cm': cmocean.cm.haline_r,  'label': 'RH [%]'},
+    'std'   : {'cm': cmocean.cm.thermal,  'label': 'Standard Deviation'},
+    'bSc'   : {'cm': 'magma', 'label': 'Backscatter [log(10) space]'},
     'bSc_TALL' : {'cm': 'magma', 'label': 'Backscatter [log(10) space]'},
-    'snr': {'cm': cmocean.cm.gray, 'label': 'Intensity (Signal to Noise Ratio)'}
+    'snr'   : {'cm': cmocean.cm.gray, 'label': 'Intensity (Signal to Noise Ratio)'}
 }
 
 def timeheight(time, height, data, field, ax, datemin=None, datemax=None,

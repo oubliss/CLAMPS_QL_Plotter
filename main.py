@@ -18,8 +18,8 @@ def main():
     plot_all_variables = True
     
     #get the data folder(s)
-    CLAMPS_number = "C1"
-    data_type = "dlVAD"
+    CLAMPS_number = "C2"
+    data_type = "aerioe"
     data_folders = file_paths['data'][CLAMPS_number][data_type]
     name_info = [CLAMPS_number, data_type]
     
@@ -32,21 +32,34 @@ def main():
             
             #check if it's a valid netCDF file
             if Plotter.is_valid_file(file):
+                print("valid file accessed")
+                #TEMPORARY CHECK
+                #check whether data is from the date range we want
+                #namely from 20210621 - 20210629
+                file_date = int(file[-19:-11])
                 
-                #get the data into a netCDF dataset object
-                data_netCDF4 = Dataset(file)
-                data = Plotter.yoink_the_data(data_netCDF4, data_type)
-                date = Plotter.date_from_filename(file)
+                if file_date <= 20210629 and file_date >= 20210621:
                 
-                #access the datatype from the file that we want
-                if plot_all_variables:
+                    #format the file name into a full path
+                    file_path = folder + "/" + file
                     
-                    #the keys hold all of the possible variable types
-                    variable_types = data_info[data_type].keys()
-                    for variable in variable_types:
-                         Plotter.create_quicklook(variable, data, date, name_info)   
+                    #get the data into a netCDF dataset object
+                    data_netCDF4 = Dataset(file_path)
+                    data = Plotter.yoink_the_data(data_netCDF4, data_type)
+                    date = Plotter.date_from_filename(file)
+                    
+                    #access the datatype from the file that we want
+                    if plot_all_variables:
                         
-                
+                        #the keys hold all of the possible variable types
+                        variable_types = data_info[data_type].keys()
+                        for variable in variable_types:
+                             Plotter.create_quicklook(variable, data, date, name_info)
+                    
+                    #TODO: Make functionality for plotting only some data
+                    
+                    #Close the dataset
+                    data_netCDF4.close()
 
 if __name__ == "__main__":
     main()

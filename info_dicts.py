@@ -20,7 +20,7 @@ data_info = {
         'snr'     : {'name': 'Intensity', 'datamax': 1.6, 'datamin': 1}
         },
     
-    'aeri': {
+    'aerioe': {
         'ptemp'      : {'name': 'Potential Temperature', 'datamax': None, 'datamin': None},
         'temp'       : {'name': 'Temperature', 'datamax': None, 'datamin': None},
         'dewpt'      : {'name': 'Dewpoint', 'datamax': None, 'datamin': None},
@@ -31,14 +31,14 @@ file_paths = {
     
     'dump':{
         'C1':{
-            'dlVAD' : ['/data/mbaldwin/visualizations/clampsdlvadC1'],
-            'dlfp'  : ['/data/mbaldwin/visualizations/clampsdlfpC1'],
-            'aerioe': ['/data/mbaldwin/visualizations/clampsaerioeC1']
+            'dlVAD' : '/data/mbaldwin/visualizations/clampsdlvadC1',
+            'dlfp'  : '/data/mbaldwin/visualizations/clampsdlfpC1',
+            'aerioe': '/data/mbaldwin/visualizations/clampsaerioeC1'
             },
         'C2':{
-            'dlVAD' : ['/data/mbaldwin/visualizations/clampsdlvadC2'],
-            'dlfp'  : ['/data/mbaldwin/visualizations/clampsdlfpC2'],
-            'aerioe': ['/data/mbaldwin/visualizations/clampsaerioeC2']
+            'dlVAD' : '/data/mbaldwin/visualizations/clampsdlvadC2',
+            'dlfp'  : '/data/mbaldwin/visualizations/clampsdlfpC2',
+            'aerioe': '/data/mbaldwin/visualizations/clampsaerioeC2'
             }
         },
     
