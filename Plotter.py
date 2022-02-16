@@ -146,19 +146,19 @@ def yoink_the_data(dataset, data_type):
         qcflag = dataset["qc_flag"][:]
         
         #find the index nearest 2500m
-        max_height_idx = 0
-        MAX_HEIGHT = 2500
-        for hgt in height:
-            if(hgt >=  MAX_HEIGHT):
-                break
-            max_height_idx += 1
-        
+    
+        #remove first two gates
+        height = height[2:]
+        num_sub2500_heights = len([h for h in height if h<2500])
+        temp = temp[:, 2:]
+        dewpt = dewpt[:, 2:]
+        ptemp = ptemp[:, 2:]        
         
         #remove first two gates
-        height = height[2:max_height_idx]
-        temp = temp[:, 2:max_height_idx]
-        ptemp = ptemp[: 2:max_height_idx]
-        dewpt = dewpt[:, 2:max_height_idx]
+        height = height[:num_sub2500_heights]
+        temp = temp[:, :num_sub2500_heights]
+        ptemp = ptemp[:, :num_sub2500_heights]
+        dewpt = dewpt[:, :num_sub2500_heights]
 
         return {"time": time,
                 'height': height,
@@ -172,7 +172,11 @@ def yoink_the_data(dataset, data_type):
         
 time_formatting = "%Y%m%d"
 def create_quicklook(data_type, data, date, name_info, #name info should be a
-                     figHeight = 5, figWidth =15):                           #list with [facility, file_type]
+                     figHeight = 5, figWidth =15):     #list with [facility, file_type]
+    
+    #parse name_info list
+    CLAMPS_number = name_info[0]
+    data_source = name_info[1]
       
     #create figure and set dimensions
     fig, ax = plt.subplots(1)
@@ -187,8 +191,8 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
     
     #use timeheight function to plot data
     ax = timeheight(timeGrid, heightGrid, data[data_type].transpose(), data_type, ax=ax,
-                    datamin = data_info[data_type]['datamin'],
-                    datamax = data_info[data_type]['datamax'],
+                    datamin = data_info[data_source][data_type]['datamin'],
+                    datamax = data_info[data_source][data_type]['datamax'],
                     zmin = 0, zmax = 2500, zorder = 1)
     
     if data_type == 'wDir':
@@ -220,8 +224,8 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
                 skeptic_cbh_indices.append(i)
         
         return {
-                "good_cbh_indices":good_cbh_indices,
-                "skeptic_cbh_indices":skeptic_cbh_indices
+                "good_cbh_indices"    : good_cbh_indices,
+                "skeptic_cbh_indices" : skeptic_cbh_indices
                 }
     
     if data_type == 'temp' or data_type == 'ptemp':
@@ -237,21 +241,22 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
                 linestyle = "None", markersize = 10, color = '90ee90', zorder = 2)
         ax.plot(data["time"][cbh_indices["skeptic_cbh_indices"]], data["cbh"][cbh_indices["skeptic_cbh_indices"]],
                 linestyle = "None", markersize = 10, color = '90ee90', zorder = 3)    
+    
     #setting x-axis limits
     seed_date = timeGrid[0][0].date()
     start_datetime = datetime(year = seed_date.year,
                               month = seed_date.month,
                               day = seed_date.day)
     end_datetime = start_datetime + timedelta(days=1)
-    
     ax.set_xlim([start_datetime, end_datetime])
 
     #set title
-    ax.set_title("{} -- {}".format(data_info[data_type]['name'], date.isoformat()), fontsize = 22)
+    ax.set_title("{} {} -- {}".format(data_info[data_source][data_type]['name'],
+                                      CLAMPS_number, date.isoformat()), fontsize = 22)
     
     #save figure
-    facility = name_info[0]
-    file_type = name_info[1]
+    facility = CLAMPS_number
+    file_type = data_source
     
     dump_folder_path = file_paths['dump'][facility][file_type]
     filename = get_QL_name(facility, file_type, data_type, start_datetime)
