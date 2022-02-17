@@ -238,9 +238,9 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
     elif data_type == 'dewpt':
         cbh_indices = qc_cbh(data)
         ax.plot(data["time"][cbh_indices["good_cbh_indices"]], data["cbh"][cbh_indices["good_cbh_indices"]],
-                linestyle = "None", markersize = 10, color = '90ee90', zorder = 2)
+                linestyle = "None", markersize = 10, color = 'green', zorder = 2)
         ax.plot(data["time"][cbh_indices["skeptic_cbh_indices"]], data["cbh"][cbh_indices["skeptic_cbh_indices"]],
-                linestyle = "None", markersize = 10, color = '90ee90', zorder = 3)    
+                linestyle = "None", markersize = 10, color = 'green', zorder = 3)    
     
     #setting x-axis limits
     seed_date = timeGrid[0][0].date()

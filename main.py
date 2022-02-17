@@ -19,7 +19,7 @@ def main():
     
     #get the data folder(s)
     CLAMPS_number = "C2"
-    data_type = "aerioe"
+    data_type = "dlfp"
     data_folders = file_paths['data'][CLAMPS_number][data_type]
     name_info = [CLAMPS_number, data_type]
     
