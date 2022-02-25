@@ -186,14 +186,16 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
     #make grid
     if data_type == "bSc_TALL":
         timeGrid, heightGrid = np.meshgrid(data["time"], data["height_FULL"])
+        zmax = round(data["height_FULL"][-1], -3) #rounds to nearest thousandth
     else:
         timeGrid, heightGrid = np.meshgrid(data["time"], data["height"])
+        zmax = 2500
     
     #use timeheight function to plot data
     ax = timeheight(timeGrid, heightGrid, data[data_type].transpose(), data_type, ax=ax,
                     datamin = data_info[data_source][data_type]['datamin'],
                     datamax = data_info[data_source][data_type]['datamax'],
-                    zmin = 0, zmax = 2500, zorder = 1)
+                    zmin = 0, zmax = zmax, zorder = 1)
     
     if data_type == 'wDir':
         
@@ -249,10 +251,16 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
                               day = seed_date.day)
     end_datetime = start_datetime + timedelta(days=1)
     ax.set_xlim([start_datetime, end_datetime])
-
+    
+    #setting the plot background color
+    ax.set_facecolor((.9,.9,.9)) #light grey
+    
     #set title
     ax.set_title("{} {} -- {}".format(data_info[data_source][data_type]['name'],
                                       CLAMPS_number, date.isoformat()), fontsize = 22)
+    
+    #tighten up the layout
+    plt.tight_layout()
     
     #save figure
     facility = CLAMPS_number
