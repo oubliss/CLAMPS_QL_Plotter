@@ -22,7 +22,7 @@ def get_QL_name(facility,file_type, data_type, date):
     
     return name
 
-def get_snr_cutoff(data):
+def get_snr_cutoff(data, loose_cutoff=False):
     
     import statistics as st
     
@@ -91,14 +91,16 @@ def get_snr_cutoff(data):
     #create boolean to record whether the standard devation has narrowed
     stdev_has_decreased = False
     
-    for idx in range(len(stdev_derivs_diff)):
+    for idx in range(len(stdev_derivs_diff-1)):
     
         if not stdev_has_decreased:
             if stdev_derivs_diff[idx] < -500:
                 stdev_has_decreased = True
         else: 
-            if abs(stdev_derivs_diff[idx]) < 100:
+            if abs(stdev_derivs_diff[idx]) < 100 and abs(stdev_derivs_diff[idx+1]) < 100:
                 snr_cutoff = bins[idx]
+                if loose_cutoff:
+                    snr_cutoff = bins[idx - 2] #for CLAMPS2
                 break
     
     return snr_cutoff
