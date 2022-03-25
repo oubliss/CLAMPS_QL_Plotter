@@ -39,11 +39,12 @@ def date_from_filename(data_filename):
 
 #data accessor function
 #returns dictionary of all relevant data from dataset
-def yoink_the_data(dataset, data_type):
+def yoink_the_data(dataset, name_info):
     
     #for debugging pruposes
     print("accessing data")
-    
+    CLAMPS_number = name_info[0]
+    data_type = name_info[1]    
     if data_type == 'dlVAD':
         #get the times
         time = [datetime.utcfromtimestamp(d) for d in (dataset['base_time'][:]+dataset['time_offset'][:])]
@@ -88,8 +89,13 @@ def yoink_the_data(dataset, data_type):
         backscatter_TALL = dataset['backscatter'][sort]
         height = dataset['height'][:] * 1000 #conversion to meters
         
-        #computes a dynamic snr cutoff 
-        snr_cutoff = get_snr_cutoff(dataset)
+        #computes a dynamic snr cutoff
+        isnt_CLAMPS2 = CLAMPS_number != "C2" #
+        if isnt_CLAMPS2:
+            snr_cutoff = get_snr_cutoff(dataset, CLAMPS_number)
+        else:
+            CLAMPS2_snr_cutoff = 1.008
+            snr_cutoff = CLAMPS2_snr_cutoff
         
         #find the index nearest 2500m
         max_height_idx = 0
@@ -107,8 +113,8 @@ def yoink_the_data(dataset, data_type):
                 else:
                     backscatter_TALL[i][j] = np.nan
                 if j < max_height_idx:
-                        if intensity[i][j] < snr_cutoff:
-                            w[i][j] = np.nan  
+                    if intensity[i][j] < snr_cutoff:
+                        w[i][j] = np.nan  
                             
         #ignore the first two gates of the doppler lidar and stop at 2500m
         height = height[2:]

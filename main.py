@@ -19,7 +19,7 @@ def main():
     
     #get the data folder(s)
     CLAMPS_number = "C2"
-    data_type = "aerioe"
+    data_type = "dlfp"
     data_folders = file_paths['data'][CLAMPS_number][data_type]
     name_info = [CLAMPS_number, data_type]
     
@@ -32,7 +32,7 @@ def main():
             
             #check if it's a valid netCDF file
             if Plotter.is_valid_file(file):
-                print("valid file accessed")
+                print(f"{file} accessed")
                 #TEMPORARY CHECK
                 #check whether data is from the date range we want
                 #namely from 20210621 - 20210629
@@ -45,7 +45,7 @@ def main():
                     
                     #get the data into a netCDF dataset object
                     data_netCDF4 = Dataset(file_path)
-                    data = Plotter.yoink_the_data(data_netCDF4, data_type)
+                    data = Plotter.yoink_the_data(data_netCDF4, name_info)
                     date = Plotter.date_from_filename(file)
                     
                     #access the datatype from the file that we want
