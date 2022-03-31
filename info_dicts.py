@@ -54,5 +54,8 @@ file_paths = {
             'dlfp'  : ['/data/clamps/clamps2/ingested/clampsdlfpC2.b1/clampsdlfpC2.b1'],
             'aerioe': ['/data/clamps/clamps2/realtime/clampsaerioe1turnC2.c1']
             }
-        }
+        },
+    
+    'error_log': '/data/mbaldwin/visualizations/error_log/error_log.txt'
+    
     }
