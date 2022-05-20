@@ -13,10 +13,10 @@ import matplotlib.pyplot as plt
 #tyler's timeheight function
 #tyler's timeheight function
 cmaps = {
-    'w'     : {'cm': 'seismic',   'label': 'vertical velocity [m/s]'},
+    'w_hs'     : {'cm': 'seismic',   'label': 'vertical velocity [m/s]'},
+    'w_ls'     : {'cm': 'seismic',   'label': 'vertical velocity [m/s]'},
     'wSpd'  : {'cm': 'gist_stern_r',              'label': 'windspeed [m/s]'},
     'wDir'  : {'cm': cmocean.cm.phase,   'label': 'wind direction [deg]'},
-    'pt'    : {'cm': cmocean.cm.thermal, 'label': 'potential temperature [C]'},
     'temp'  : {'cm': cmocean.cm.thermal, 'label': 'temperature [C]'},
     'ptemp' : {'cm': cmocean.cm.thermal, 'label': 'potential temperature [C]'},
     'q'     : {'cm': cmocean.cm.haline_r,  'label': 'q [g/kg]'},
@@ -36,10 +36,12 @@ def timeheight(time, height, data, field, ax, datemin=None, datemax=None,
     :param height: Array of heights (1-D or 2-D but must have same dimensions as time)
     :param data: Array of the data to plot (2-D)
     :param field: Field being plotted. Currently supported:
-        'w': Vertical Velocity
-        'ws': Wind Speed
-        'wd': Wind Direction
-        'pt': Potential Temperature
+        'w_hs': High Sensitivity Vertical Velocity
+        'w_ls': Low Sensitivity Vertical Velocity
+        'wSpd': Wind Speed
+        'wDir': Wind Direction
+        'temp': Temperature
+        'ptemp': Potential Temperature
         'q':  Specific Humidity
         'dp': Dewpoint
         'rh': Relative Humidity
