@@ -13,10 +13,11 @@ data_info = {
         },
     
     'dlfp'  : {
-        'w'       : {'name': 'Vertical Velocity', 'datamax': 5, 'datamin': -5},
-        'bSc'     : {'name': 'Backscatter', 'datamax': -3, 'datamin': -8},
-        'bSc_TALL': {'name': 'Backscatter -- Full Range', 'datamax': -3, 'datamin': -8},
-        'snr'     : {'name': 'Intensity', 'datamax': 1.6, 'datamin': 1}
+        'w_ls'       : {'name': 'Vertical Velocity (High Sensitivity)', 'datamax': 2, 'datamin': -2},
+        'w_hs'       : {'name': 'Vertical Velocity (Low Sensitivity)', 'datamax': 5, 'datamin': -5},
+        'bSc'        : {'name': 'Backscatter', 'datamax': -3, 'datamin': -8},
+        'bSc_TALL'   : {'name': 'Backscatter -- Full Range', 'datamax': -3, 'datamin': -8},
+        'snr'        : {'name': 'Intensity', 'datamax': 1.6, 'datamin': 1}
         },
     
     'aerioe': {
