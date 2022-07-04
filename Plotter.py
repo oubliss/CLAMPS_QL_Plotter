@@ -145,6 +145,7 @@ def yoink_the_data(dataset, name_info):
         temp = dataset["temperature"][sort]
         ptemp = dataset["theta"][sort]
         dewpt = dataset["dewpt"][sort]
+        wvmr = dataset["waterVapor"][sort]
         height = dataset["height"][:] * 1000        
  
         #cbh and quality flag
@@ -158,13 +159,15 @@ def yoink_the_data(dataset, name_info):
         num_sub2500_heights = len([h for h in height if h<2500])
         temp = temp[:, 2:]
         dewpt = dewpt[:, 2:]
-        ptemp = ptemp[:, 2:]        
+        ptemp = ptemp[:, 2:]
+        wvmr = wvmr[:, 2:]
         
         #remove first two gates
         height = height[:num_sub2500_heights]
         temp = temp[:, :num_sub2500_heights]
         ptemp = ptemp[:, :num_sub2500_heights]
         dewpt = dewpt[:, :num_sub2500_heights]
+        wvmr = wvmr[:, :num_sub2500_heights]
 
         return {"time": time,
                 'height': height,
@@ -172,6 +175,7 @@ def yoink_the_data(dataset, name_info):
                 "temp": temp,
                 "ptemp": ptemp,
                 "dewpt": dewpt,
+                "wvmr": wvmr,
                 "qcflag": qcflag}
         
         
@@ -196,6 +200,11 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
     else:
         timeGrid, heightGrid = np.meshgrid(data["time"], data["height"])
         zmax = 2500
+    
+    norm = None
+    if data_type == 'temp':
+        import matplotlib.colors as col
+        norm = col.TwoSlopeNorm(vcenter = 0)
     
     #use timeheight function to plot data
     ax = timeheight(timeGrid, heightGrid, data[data_type].transpose(), data_type, ax=ax,
@@ -243,7 +252,7 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
         ax.plot(data["time"][cbh_indices["skeptic_cbh_indices"]], data["cbh"][cbh_indices["skeptic_cbh_indices"]],
                 linestyle = "None", markersize = 10, color = 'pink', zorder = 3)
         
-    elif data_type == 'dewpt':
+    elif data_type == 'dewpt' or data_type == 'wvmr':
         cbh_indices = qc_cbh(data)
         ax.plot(data["time"][cbh_indices["good_cbh_indices"]], data["cbh"][cbh_indices["good_cbh_indices"]],
                 linestyle = "None", markersize = 10, color = 'green', zorder = 2)
