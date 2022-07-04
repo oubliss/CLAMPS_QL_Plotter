@@ -8,19 +8,52 @@ import cmocean
 import matplotlib.dates as mdates
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import colors as col
 
+#custom cmaps
+ptemp_cmap = col.LinearSegmentedColormap.from_list('ptemp_cmap', ['#fef0d9',
+                                                                 '#fdcc8a',
+                                                                 '#fc8d59',
+                                                                 '#d7301f'])
 
-#tyler's timeheight function
+blue_cmap = col.LinearSegmentedColormap.from_list('blue_cmap', ['#f0f9e8',
+                                                                '#bae4bc',
+                                                                '#7bccc4',
+                                                                '#2b8cbe'])
+#get samples of color from both
+#the [0 to 1] range of the linspace is how much of the cmap you want to slice
+r_col = ptemp_cmap(np.linspace(0.1, 1., 256))
+b_col = blue_cmap.reversed()(np.linspace(0.1, 1., 256))
+all_colors = np.vstack((b_col,r_col))
+temp_cmap = col.LinearSegmentedColormap.from_list('spliced_cmap', all_colors)
+
+#Blue - 60F - Green - 0C - Brown
+dwpt_cmap = col.LinearSegmentedColormap.from_list('dwpt_cmap', [(0., '#614623'),
+                                                                (.375, '#8f8b1d'),
+                                                                (.5, '#16a10e'),
+                                                                (.75, '#39b8a9'),
+                                                                (1.,'#177fff')]
+                                                  )
+
+#Blue 15+, Green 6+, else Brown
+wvmr_cmap = col.LinearSegmentedColormap.from_list('', [(0., '#614623'),
+                                                       (.25, '#8f8b1d'),
+                                                       (.35, '#16a10e'),
+                                                       (.75, '#39b8a9'),
+                                                       (1.,'#177fff')]
+                                                  )
+
 #tyler's timeheight function
 cmaps = {
     'w_hs'     : {'cm': 'seismic',   'label': 'vertical velocity [m/s]'},
     'w_ls'     : {'cm': 'seismic',   'label': 'vertical velocity [m/s]'},
     'wSpd'  : {'cm': 'gist_stern_r',              'label': 'windspeed [m/s]'},
     'wDir'  : {'cm': cmocean.cm.phase,   'label': 'wind direction [deg]'},
-    'temp'  : {'cm': cmocean.cm.thermal, 'label': 'temperature [C]'},
-    'ptemp' : {'cm': cmocean.cm.thermal, 'label': 'potential temperature [C]'},
+    'temp'  : {'cm': temp_cmap, 'label': 'temperature [C]'},
+    'ptemp' : {'cm': ptemp_cmap, 'label': 'potential temperature [C]'},
+    'wvmr'  : {'cm': wvmr_cmap, 'label': 'Mixing Ratio [g/kg]'},
     'q'     : {'cm': cmocean.cm.haline_r,  'label': 'q [g/kg]'},
-    'dewpt' : {'cm': cmocean.cm.haline_r,  'label': 'dewpoint [C]'},
+    'dewpt' : {'cm': dwpt_cmap,  'label': 'dewpoint [C]'},
     'rh'    : {'cm': cmocean.cm.haline_r,  'label': 'RH [%]'},
     'std'   : {'cm': cmocean.cm.thermal,  'label': 'Standard Deviation'},
     'bSc'   : {'cm': 'magma', 'label': 'Backscatter [log(10) space]'},
@@ -29,7 +62,8 @@ cmaps = {
 }
 
 def timeheight(time, height, data, field, ax, datemin=None, datemax=None,
-                datamin=None, datamax=None, zmin=None, zmax=None, cmap=None, **kwargs):
+                datamin=None, datamax=None, zmin=None, zmax=None, cmap=None,
+                norm = None, **kwargs):
     '''
     Produces a time height plot of a 2-D field
     :param time: Array of times (1-D or 2-D but must have same dimenstions as height)
@@ -69,7 +103,7 @@ def timeheight(time, height, data, field, ax, datemin=None, datemax=None,
         time, height = np.meshgrid(time, height)
 
     # Create the plot
-    c = ax.pcolormesh(time, height, data, vmin=datamin, vmax=datamax, cmap=cm, **kwargs)
+    c = ax.pcolormesh(time, height, data, vmin=datamin, vmax=datamax, cmap=cm, norm = norm, **kwargs)
 
     # Format the colorbar
     # c.cmap.set_bad('grey', 1.0)
