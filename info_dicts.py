@@ -21,9 +21,10 @@ data_info = {
         },
     
     'aerioe': {
-        'ptemp'      : {'name': 'Potential Temperature', 'datamax': None, 'datamin': None},
-        'temp'       : {'name': 'Temperature', 'datamax': None, 'datamin': None},
-        'dewpt'      : {'name': 'Dewpoint', 'datamax': None, 'datamin': None},
+        'ptemp'      : {'name': 'Potential Temperature', 'datamax': 320, 'datamin':290},
+        'temp'       : {'name': 'Temperature', 'datamax': 30, 'datamin': -20},
+        'dewpt'      : {'name': 'Dewpoint', 'datamax': 25, 'datamin': -15},
+        'wvmr'       : {'name': 'Water Vapor Mixing Ratio', 'datamax': 20, 'datamin': 0}
         }
     }
 
