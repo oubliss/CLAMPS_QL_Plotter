@@ -103,7 +103,7 @@ def timeheight(time, height, data, field, ax, datemin=None, datemax=None,
         time, height = np.meshgrid(time, height)
 
     # Create the plot
-    c = ax.pcolormesh(time, height, data, vmin=datamin, vmax=datamax, cmap=cm, norm = norm, **kwargs)
+    c = ax.pcolormesh(time, height, data, vmin=datamin, vmax=datamax, cmap=cm, norm = norm, shading='auto',**kwargs)
 
     # Format the colorbar
     # c.cmap.set_bad('grey', 1.0)
@@ -115,7 +115,7 @@ def timeheight(time, height, data, field, ax, datemin=None, datemax=None,
     # ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%H%M'))
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
-  
+
     if zmin is not None and zmax is not None:
         ax.set_ylim(zmin, zmax)
     if datemin is not None and datemax is not None:
@@ -124,10 +124,10 @@ def timeheight(time, height, data, field, ax, datemin=None, datemax=None,
     # Set the labels
     ax.set_ylabel('Height [m]', size = 18)
     ax.set_xlabel('Time [UTC]', size = 18)
-    
+
     #setting fontsizes
     ax.tick_params(axis = 'x', labelsize = 16)
-    ax.tick_params(axis = 'y', labelsize = 16) 
+    ax.tick_params(axis = 'y', labelsize = 16)
     cb.ax.tick_params(labelsize=16)
     cb.set_label(cb_label, size = 16)
 
