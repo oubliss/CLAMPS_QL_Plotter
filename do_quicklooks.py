@@ -16,8 +16,7 @@ def check_bound(t, b):
     return (t >= b[0]) and (t <= b[1])
 
 
-# Set up logging
-log.basicConfig(format="%(asctime)s:%(levelname)s:%(message)s", level=log.INFO)
+
 
 # Set up the argument parser
 parser = ArgumentParser()
@@ -30,7 +29,11 @@ parser.add_argument('--debug', action='store_true', default=False)
 args = parser.parse_args()
 
 if args.debug:
+    print("HELLO")
     log.basicConfig(format="%(asctime)s:%(levelname)s:%(message)s", level=log.DEBUG)
+
+else:
+    log.basicConfig(format="%(asctime)s:%(levelname)s:%(message)s", level=log.INFO)
 
 # Extract the arguments
 start_date = int(args.start_date)
@@ -42,6 +45,9 @@ data_types = data_info.keys()
 
 # Loop through each data type and plot them
 for data_type in data_types:
+
+    # if data_type == 'dlVAD':
+    #     continue
     log.info(f"Working on data type {data_type}")
     # Get the data folders for this data type
     data_folders = file_paths['data'][CLAMPS_number][data_type]
@@ -59,19 +65,20 @@ for data_type in data_types:
                 log.warning(f"Invalid file found: {fn}")
                 continue
 
-            log.info(f"    Plotting file {fn}")
-
             name_info = [CLAMPS_number, data_type]
             nc = Dataset(fn)
             data = Plotter.yoink_the_data(nc, name_info)
             date = Plotter.date_from_filename(fn)
+            nc.close()
 
             variable_types = data_info[data_type].keys()
 
             # if the data doesn't have a variable, skip it and make note
             data_variable_types = data.keys()
             missing_data = []
+            print(data_variable_types)
 
+            log.info(f"    Plotting file {fn}")
             for variable in variable_types:
                 log.debug(f"Working on variable {variable}")
 
@@ -97,6 +104,7 @@ for data_type in data_types:
                 else:
                     try:
                         Plotter.create_quicklook(variable, data, date, name_info)
-                    except Exception:
+                    except Exception as e:
+                        print(e)
                         log.error(f"    Error on file {fn.split('/')[-1]}: {variable}")
                         continue

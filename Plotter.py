@@ -153,7 +153,8 @@ def yoink_the_data(dataset, name_info):
         backscatter = backscatter_TALL[:, :max_height_idx-2]
 
         return {"time": time,
-                'w': w,
+                'w_hs': w,
+                'w_ls': w,
                 'snr': intensity,
                 'bSc': backscatter,
                 'bSc_TALL' : backscatter_TALL,
@@ -174,21 +175,16 @@ def yoink_the_data(dataset, name_info):
         ptemp = dataset["theta"][sort]
         dewpt = dataset["dewpt"][sort]
         wvmr = dataset["waterVapor"][sort]
+        lwp = dataset["lwp"][sort]
         height = dataset["height"][:] * 1000
 
         #cbh and quality flag
-        cbh = dataset["cbh"][:] * 1000
-        qcflag = dataset["qc_flag"][:]
-
+        cbh = dataset["cbh"][sort] * 1000
+        qcflag = dataset["qc_flag"][sort]
+        rms = dataset["rmsa"][sort]
+        hatch = dataset['hatchOpen'][sort]
         #find the index nearest 2500m
-
-        #remove first two gates
-        height = height[2:]
         num_sub2500_heights = len([h for h in height if h<2500])
-        temp = temp[:, 2:]
-        dewpt = dewpt[:, 2:]
-        ptemp = ptemp[:, 2:]
-        wvmr = wvmr[:, 2:]
 
         #remove first two gates
         height = height[:num_sub2500_heights]
@@ -204,6 +200,9 @@ def yoink_the_data(dataset, name_info):
                 "ptemp": ptemp,
                 "dewpt": dewpt,
                 "wvmr": wvmr,
+                "lwp": lwp,
+                "rms": rms,
+                "hatch": hatch,
                 "qcflag": qcflag}
 
 
@@ -259,33 +258,50 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
                  v.transpose()[::skipx, ::skipy])
 
     #adding cbh
-    def qc_cbh(data): #returns good and maybe indices for cbh based on qcflag
-        good_cbh_indices = []
-        skeptic_cbh_indices = []
-        for i in range(len(data["cbh"])):
+    def qc_aeri(data): #returns good and maybe indices for cbh based on qcflag
+        hatch_closed_indices = []
+        skeptical_indices = []
+        cbh_indices = []
+        print(data['hatch'])
+        for i in range(len(data["time"])):
+            if data["rms"][i] > 10:
+                skeptical_indices.append(i)
+
+            if data['lwp'][i] > 3:
+                cbh_indices.append(i)
+
+            if data['hatch'][i] < 1:
+                hatch_closed_indices.append(i)
+
+
+            """
             if data["qcflag"][i] == 0:
                 good_cbh_indices.append(i)
             elif data["qcflag"][i] == 3:
                 skeptic_cbh_indices.append(i)
+            """
 
         return {
-                "good_cbh_indices"    : good_cbh_indices,
-                "skeptic_cbh_indices" : skeptic_cbh_indices
+                "hatch"    : hatch_closed_indices,
+                "qc" : skeptical_indices,
+                "cbh": cbh_indices
                 }
 
-    if data_type == 'temp' or data_type == 'ptemp':
-        cbh_indices = qc_cbh(data)
+    if data_type in ['temp', 'ptemp', 'dewpt', 'wvmr']:
+        indices = qc_aeri(data)
+        ax.plot(data["time"][indices["cbh"]], data["cbh"][indices["cbh"]],
+                linestyle = "None", markersize = 10, color = 'k', marker='.')
+        print(indices["hatch"]
+              )
+        ax.plot(data["time"][indices["hatch"]], np.full_like(data["time"][indices["hatch"]], 2500*.98),
+                 linestyle = "None", markersize = 10, color = 'red', marker='.')
+
+        """
         ax.plot(data["time"][cbh_indices["good_cbh_indices"]], data["cbh"][cbh_indices["good_cbh_indices"]],
                 linestyle = "None", markersize = 10, color = 'pink', zorder = 2)
         ax.plot(data["time"][cbh_indices["skeptic_cbh_indices"]], data["cbh"][cbh_indices["skeptic_cbh_indices"]],
                 linestyle = "None", markersize = 10, color = 'pink', zorder = 3)
-
-    elif data_type == 'dewpt' or data_type == 'wvmr':
-        cbh_indices = qc_cbh(data)
-        ax.plot(data["time"][cbh_indices["good_cbh_indices"]], data["cbh"][cbh_indices["good_cbh_indices"]],
-                linestyle = "None", markersize = 10, color = 'green', zorder = 2)
-        ax.plot(data["time"][cbh_indices["skeptic_cbh_indices"]], data["cbh"][cbh_indices["skeptic_cbh_indices"]],
-                linestyle = "None", markersize = 10, color = 'green', zorder = 3)
+        """
 
     #setting x-axis limits
     seed_date = timeGrid[0][0].date()
@@ -314,6 +330,7 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
 
     dump_path = dump_folder_path + "/" + filename
 
+    print(dump_path)
     plt.savefig(dump_path)
 
     #close the plot
