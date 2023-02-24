@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 
 from datetime import datetime, timedelta
@@ -50,6 +51,14 @@ def of(data_type, data, date, name_info):
 
         thermo_ax.set_xlim([start_datetime, end_datetime])
         wind_ax.set_xlim([start_datetime, end_datetime])
+        wind_ax.grid()
+
+        # Format the limits
+        wind_ax.xaxis.set_major_locator(mdates.HourLocator(interval=2))
+        wind_ax.xaxis.set_minor_locator(mdates.HourLocator())
+        # ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d'))
+        wind_ax.xaxis.set_major_formatter(mdates.DateFormatter('%H%M'))
+        plt.setp(wind_ax.xaxis.get_majorticklabels(), rotation=45)
 
     else:
         pass
