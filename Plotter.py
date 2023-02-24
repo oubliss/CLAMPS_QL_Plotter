@@ -206,7 +206,7 @@ def yoink_the_data(dataset, name_info):
                 "hatch": hatch,
                 "qcflag": qcflag}
 
-    if data_type == 'mwr':
+    if data_type == 'tower':
 
         # get the times
         time = [datetime.utcfromtimestamp(d) for d in (dataset['base_time'][:] + dataset['time_offset'][:])]

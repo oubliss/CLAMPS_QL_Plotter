@@ -66,6 +66,8 @@ for data_type in data_types:
                 log.warning(f"Invalid file found: {fn}")
                 continue
 
+            log.debug(fn)
+
             name_info = [CLAMPS_number, data_type]
             nc = Dataset(fn)
             data = Plotter.yoink_the_data(nc, name_info)
@@ -99,7 +101,7 @@ for data_type in data_types:
                         log.debug("  Skipping this file")
                         continue
 
-                if variable in ['tower']:
+                if variable in ['thermo', 'wind', 'rain_rate']:
                     print("HELLO")
                     do_timeseries.of(variable, data, date, name_info)
                     continue
