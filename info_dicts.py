@@ -28,6 +28,11 @@ data_info = {
         'temp'       : {'name': 'Temperature', 'datamax': 30, 'datamin': -20},
         'dewpt'      : {'name': 'Dewpoint', 'datamax': 25, 'datamin': -15},
         'wvmr'       : {'name': 'Water Vapor Mixing Ratio', 'datamax': 20, 'datamin': 0}
+        },
+
+    'mwr': {
+        'tower'      : {'name': 'MWR Tower'},
+        # 'lwp'        : {'name': 'LWP/PWV (fixed)'}
         }
     }
 
@@ -37,12 +42,14 @@ file_paths = {
         'C1':{
             'dlVAD' : f'{plot_base_dir}/clampsdlvadC1',
             'dlfp'  : f'{plot_base_dir}/clampsdlfpC1',
-            'aerioe': f'{plot_base_dir}/clampsaerioeC1'
+            'aerioe': f'{plot_base_dir}/clampsaerioeC1',
+            'mwr'   : f'{plot_base_dir}/clampsmwrC1'
             },
         'C2':{
             'dlVAD' : f'{plot_base_dir}/clampsdlvadC2',
             'dlfp'  : f'{plot_base_dir}/clampsdlfpC2',
-            'aerioe': f'{plot_base_dir}/clampsaerioeC2'
+            'aerioe': f'{plot_base_dir}/clampsaerioeC2',
+            'mwr'   : f'{plot_base_dir}/clampsmwrC2'
             }
         },
 
@@ -51,13 +58,15 @@ file_paths = {
             'dlVAD' : ['/raid/clamps/clamps/clamps1/processed/clampsdlvad1turnC1.c1',
                        '/raid/clamps/clamps/clamps1/processed/clampsdlvadC1.c1'],
             'dlfp'  : ['/raid/clamps/clamps/clamps1/ingested/clampsdlfpC1.b1'],
-            'aerioe': ['/raid/clamps/clamps/clamps1/realtime/clampsaerioe1turnC1.c1']
+            'aerioe': ['/raid/clamps/clamps/clamps1/realtime/clampsaerioe1turnC1.c1'],
+            'mwr': ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1']
             },
         'C2':{
             'dlVAD' : ['/raid/clamps/clamps/clamps2/processed/clampsdlvad1turnC2.c1',
                        '/raid/clamps/clamps/clamps2/processed/clampsdlvadC2.c1'],
             'dlfp'  : ['/raid/clamps/clamps/clamps2/ingested/clampsdlfpC2.b1'],
-            'aerioe': ['/raid/clamps/clamps/clamps2/realtime/clampsaerioe1turnC2.c1']
+            'aerioe': ['/raid/clamps/clamps/clamps2/realtime/clampsaerioe1turnC2.c1'],
+            'mwr': ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1']
             }
         },
 

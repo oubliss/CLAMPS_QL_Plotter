@@ -7,6 +7,7 @@ from glob import glob
 from netCDF4 import Dataset
 
 import Plotter
+import do_timeseries
 from helper_functions import get_QL_name
 from info_dicts import file_paths, data_info
 
@@ -98,11 +99,17 @@ for data_type in data_types:
                         log.debug("  Skipping this file")
                         continue
 
+                if variable in ['tower']:
+                    print("HELLO")
+                    do_timeseries.of(variable, data, date, name_info)
+                    continue
+
                 # check whether there is missing data if we're plotting everything
                 if variable not in data_variable_types:
                     missing_data.append(variable)
                 else:
                     try:
+
                         Plotter.create_quicklook(variable, data, date, name_info)
                     except Exception as e:
                         print(e)

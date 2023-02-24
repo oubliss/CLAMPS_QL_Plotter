@@ -7,6 +7,7 @@ Created on Thu Oct 14 19:22:36 2021
 
 #official libraries
 import numpy as np
+from scipy.signal import find_peaks
 from datetime import datetime, timedelta
 from matplotlib import pyplot as plt
 from matplotlib.colors import Normalize
@@ -204,6 +205,55 @@ def yoink_the_data(dataset, name_info):
                 "rms": rms,
                 "hatch": hatch,
                 "qcflag": qcflag}
+
+    if data_type == 'mwr':
+
+        # get the times
+        time = [datetime.utcfromtimestamp(d) for d in (dataset['base_time'][:] + dataset['time_offset'][:])]
+
+        # sort the times
+        sort = np.argsort(time)
+        time = np.array(time)[sort]
+
+        # Extract the data
+        temp = dataset['sfc_temp'][sort]
+        rh = dataset['sfc_rh'][sort]
+        pres = dataset['sfc_pres'][sort]
+        pwv = dataset['pwv'][sort]
+        lwp = dataset['lwp'][sort]
+        rain_rate = dataset['rain_rate'][sort]
+        sfc_wspd = dataset['sfc_wspd'][sort]
+        sfc_wdir = dataset['sfc_wdir'][sort]
+
+        # Calculate dewpoint
+        def sat_vapor_pressure(T):
+            """
+            :param T: T in degrees C
+            :return:
+            """
+            return 6.112 * np.exp(17.67 * T / (T + 243.5))
+
+        def dewpoint(e):
+            """
+            returns Td in C
+            :param e:
+            :return:
+            """
+            return 243.5 * np.log(e / 6.112) / (17.67 - np.log(e / 6.112))
+
+        dwpt = dewpoint(rh / 100 * sat_vapor_pressure(temp))
+
+        return {"time": time,
+                "temp": temp,
+                "rh": rh,
+                "dwpt": dwpt,
+                "pres": pres,
+                "pwv": pwv,
+                "lwp": lwp,
+                "rain_rate": rain_rate,
+                "wspd": sfc_wspd,
+                "wdir": sfc_wdir
+                }
 
 
 
