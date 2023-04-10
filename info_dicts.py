@@ -6,7 +6,7 @@ Created on Thu Oct 14 18:56:36 2021
 """
 
 # plot_base_dir = "/raid/clamps/reprocessing/quicklooks/"
-plot_base_dir = "/www/apps.nssl.noaa.gov/clamps-test/test/plots"
+plot_base_dir = "/www/apps.nssl.noaa.gov/clamps-test/CLAMPS_website/plots"
 
 data_info = {
 
@@ -30,10 +30,12 @@ data_info = {
         'wvmr'       : {'name': 'Water Vapor Mixing Ratio', 'datamax': 20, 'datamin': 0}
         },
 
-    'mwr': {
-        'tower'      : {'name': 'MWR Tower'},
-        # 'lwp'        : {'name': 'LWP/PWV (fixed)'}
-        }
+    'tower': {
+        'thermo'      : {'name': 'MWR Tower'},
+        'wind'        : {'name': 'MWR Tower'},
+        'rain_rate'   : {'name': 'MWR Tower'},
+        },
+
     }
 
 file_paths = {
@@ -43,13 +45,13 @@ file_paths = {
             'dlVAD' : f'{plot_base_dir}/clampsdlvadC1',
             'dlfp'  : f'{plot_base_dir}/clampsdlfpC1',
             'aerioe': f'{plot_base_dir}/clampsaerioeC1',
-            'mwr'   : f'{plot_base_dir}/clampsmwrC1'
+            'tower'   : f'{plot_base_dir}/clampstowerC1'
             },
         'C2':{
             'dlVAD' : f'{plot_base_dir}/clampsdlvadC2',
             'dlfp'  : f'{plot_base_dir}/clampsdlfpC2',
             'aerioe': f'{plot_base_dir}/clampsaerioeC2',
-            'mwr'   : f'{plot_base_dir}/clampsmwrC2'
+            'tower'   : f'{plot_base_dir}/clampstowerC2'
             }
         },
 
@@ -59,14 +61,14 @@ file_paths = {
                        '/raid/clamps/clamps/clamps1/processed/clampsdlvadC1.c1'],
             'dlfp'  : ['/raid/clamps/clamps/clamps1/ingested/clampsdlfpC1.b1'],
             'aerioe': ['/raid/clamps/clamps/clamps1/realtime/clampsaerioe1turnC1.c1'],
-            'mwr': ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1']
+            'tower': ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1']
             },
         'C2':{
             'dlVAD' : ['/raid/clamps/clamps/clamps2/processed/clampsdlvad1turnC2.c1',
                        '/raid/clamps/clamps/clamps2/processed/clampsdlvadC2.c1'],
             'dlfp'  : ['/raid/clamps/clamps/clamps2/ingested/clampsdlfpC2.b1'],
             'aerioe': ['/raid/clamps/clamps/clamps2/realtime/clampsaerioe1turnC2.c1'],
-            'mwr': ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1']
+            'tower': ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1']
             }
         },
 

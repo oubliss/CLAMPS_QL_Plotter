@@ -244,9 +244,9 @@ def yoink_the_data(dataset, name_info):
         dwpt = dewpoint(rh / 100 * sat_vapor_pressure(temp))
 
         return {"time": time,
-                "temp": temp,
+                "temp": temp-273.15,
                 "rh": rh,
-                "dwpt": dwpt,
+                "dwpt": dwpt-273.15,
                 "pres": pres,
                 "pwv": pwv,
                 "lwp": lwp,
