@@ -258,8 +258,8 @@ def yoink_the_data(dataset, name_info):
 
 
 time_formatting = "%Y%m%d"
-def create_quicklook(data_type, data, date, name_info, #name info should be a
-                     figHeight = 5, figWidth =15):     #list with [facility, file_type]
+def create_quicklook(data_type, data, date, name_info, #name info should be a list with [facility, file_type]
+                     figHeight = 5, figWidth =15, realtime=False):     
 
     #parse name_info list
     CLAMPS_number = name_info[0]
@@ -312,7 +312,7 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
         hatch_closed_indices = []
         skeptical_indices = []
         cbh_indices = []
-        print(data['hatch'])
+
         for i in range(len(data["time"])):
             if data["rms"][i] > 10:
                 skeptical_indices.append(i)
@@ -341,8 +341,7 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
         indices = qc_aeri(data)
         ax.plot(data["time"][indices["cbh"]], data["cbh"][indices["cbh"]],
                 linestyle = "None", markersize = 10, color = 'k', marker='.')
-        print(indices["hatch"]
-              )
+
         ax.plot(data["time"][indices["hatch"]], np.full_like(data["time"][indices["hatch"]], 2500*.98),
                  linestyle = "None", markersize = 10, color = 'red', marker='.')
 
@@ -376,12 +375,34 @@ def create_quicklook(data_type, data, date, name_info, #name info should be a
     file_type = data_source
 
     dump_folder_path = file_paths['dump'][facility][file_type]
-    filename = get_QL_name(facility, file_type, data_type, start_datetime)
+    # filename = get_QL_name(facility, file_type, data_type, start_datetime)
 
-    dump_path = dump_folder_path + "/" + filename
+    # dump_path = dump_folder_path + "/" + filename
 
-    print(dump_path)
-    plt.savefig(dump_path)
+    if realtime:
+        filename = get_QL_name(facility, file_type, data_type, start_datetime, realtime)
+        
+        # Get realtime dates
+        end_time = datetime.utcnow()
+        td = [6, 24]
+
+        for fn, t in zip(filename, td): 
+            
+            # Redo the x-limits
+            ax.set_xlim([end_time-timedelta(hours=t), end_time])
+
+            # Redo the title
+            ax.set_title("{} {} -- {}".format(data_info[data_source][data_type]['name'],
+                                      CLAMPS_number, f"Last {t} Hours"), fontsize = 22)
+
+            dump_path = dump_folder_path + "/" + fn
+            # print(dump_path)
+            plt.savefig(dump_path)
+    else:
+        filename = get_QL_name(facility, file_type, data_type, start_datetime)
+        dump_path = dump_folder_path + "/" + filename
+        # print(dump_path)
+        plt.savefig(dump_path)
 
     #close the plot
     plt.close()

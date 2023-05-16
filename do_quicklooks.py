@@ -2,6 +2,7 @@ import os
 import traceback as tb
 import logging as log
 from argparse import ArgumentParser
+from datetime import datetime
 from glob import glob
 
 from netCDF4 import Dataset
@@ -60,6 +61,8 @@ for data_type in data_types:
 
         # Find files between the start and end date
         files = [fn for fn in files if check_bound(int(fn[-19:-11]), (start_date, end_date))]
+        #if len(files) == 0 and args.realtime:
+
 
         for fn in sorted(files):
             if not Plotter.is_valid_file(fn):
@@ -69,7 +72,12 @@ for data_type in data_types:
             log.debug(fn)
 
             name_info = [CLAMPS_number, data_type]
-            nc = Dataset(fn)
+            try:
+                nc = Dataset(fn)
+            except OSError:
+                log.critical(f"Error opening file {fn}")
+                continue
+            
             data = Plotter.yoink_the_data(nc, name_info)
             date = Plotter.date_from_filename(fn)
             nc.close()
@@ -102,8 +110,7 @@ for data_type in data_types:
                         continue
 
                 if variable in ['thermo', 'wind', 'rain_rate']:
-                    print("HELLO")
-                    do_timeseries.of(variable, data, date, name_info)
+                    do_timeseries.of(variable, data, date, name_info, args.realtime)
                     continue
 
                 # check whether there is missing data if we're plotting everything
@@ -112,7 +119,7 @@ for data_type in data_types:
                 else:
                     try:
 
-                        Plotter.create_quicklook(variable, data, date, name_info)
+                        Plotter.create_quicklook(variable, data, date, name_info, realtime=args.realtime)
                     except Exception as e:
                         print(e)
                         log.error(f"    Error on file {fn.split('/')[-1]}: {variable}")

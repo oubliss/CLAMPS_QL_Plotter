@@ -13,7 +13,7 @@ def uv_from_spd_dir(speed, wdir):
     v = -speed * np.cos(wdir)
     return u, v
 
-def get_QL_name(facility, data_source, data_type, date):
+def get_QL_name(facility, data_source, data_type, date, realtime=False):
     
     if isinstance(date, int):
         date_str = str(date)
@@ -21,7 +21,11 @@ def get_QL_name(facility, data_source, data_type, date):
         date_format = "%Y%m%d"
         date_str = datetime.strftime(date, date_format)
     
-    name = f"QL.{facility}.{data_source}.{data_type}.{date_str}.png"
+    if realtime:
+        name = [f"QL.{facility}.{data_source}.{data_type}.last_06_hours.png",
+                f"QL.{facility}.{data_source}.{data_type}.last_24_hours.png"]
+    else:
+        name = f"QL.{facility}.{data_source}.{data_type}.{date_str}.png"
     
     return name
 

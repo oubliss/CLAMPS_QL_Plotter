@@ -16,17 +16,20 @@ def do_mwr_housekeeping():
     return
 
 
-def of(data_type, data, date, name_info):
+def of(data_type, data, date, name_info, realtime=False):
 
     CLAMPS_number = name_info[0]
     data_source = name_info[1]
 
-    start_datetime = date
-    end_datetime = date + timedelta(days=1)
+    if not realtime:
+        start_datetime = date
+        end_datetime = date + timedelta(days=1)
+    else:
+        end_datetime = datetime.utcnow()
+        start_datetime = end_datetime - timedelta(hours=6)
 
     fig_height = 5
     fig_width = 15
-    fig, (ax) = plt.subplots(1, figsize=(fig_width, fig_height))
     fig, (ax) = plt.subplots(1, figsize=(fig_width, fig_height))
 
     if data_type == 'thermo':
@@ -82,12 +85,22 @@ def of(data_type, data, date, name_info):
     file_type = data_source
 
     dump_folder_path = file_paths['dump'][facility][file_type]
-    filename = get_QL_name(facility, file_type, data_type, start_datetime)
+    if realtime:
+        print("Realtime")
+        filename = get_QL_name(facility, file_type, data_type, start_datetime, realtime)
+        
+        for fn in filename: 
+            dump_path = dump_folder_path + "/" + fn
+            print(dump_path)
+            plt.savefig(dump_path)
+    else:
+        filename = get_QL_name(facility, file_type, data_type, start_datetime)
+        dump_path = dump_folder_path + "/" + filename
+        print(dump_path)
+        plt.savefig(dump_path)
+        
 
-    dump_path = dump_folder_path + "/" + filename
-
-    print(dump_path)
-    plt.savefig(dump_path)
+    
 
     # close the plot
     plt.close()
