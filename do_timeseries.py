@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.colorbar as cbar
+import matplotlib as mpl
 import numpy as np
 
 from datetime import datetime, timedelta
 
 from info_dicts import data_info, file_paths
-from helper_functions import get_QL_name
+from helper_functions import get_QL_name, add_blank_colorbar
 
 
 def do_lwp():
@@ -32,6 +34,7 @@ def of(data_type, data, date, name_info, realtime=False):
     fig_width = 15
     fig, (ax) = plt.subplots(1, figsize=(fig_width, fig_height))
 
+    cb = None
     if data_type == 'thermo':
 
         ax.plot(data['time'], data['temp'], 'maroon')
@@ -44,6 +47,8 @@ def of(data_type, data, date, name_info, realtime=False):
         ax.set_ylim((np.min(data['dwpt']-5), np.max(data['temp']+5)))
         ax.grid()
         ax.set_xlim([start_datetime, end_datetime])
+
+        cb = add_blank_colorbar(fig)
 
     elif data_type == 'wind':
 
@@ -59,6 +64,20 @@ def of(data_type, data, date, name_info, realtime=False):
         ax.grid()
 
         ax2.tick_params(axis='y', labelsize=16)
+
+        # cb, kwargs = cbar.make_axes(ax)
+        cb = add_blank_colorbar(fig)
+
+    elif data_type == "rain_rate":
+
+        ax.plot(data['time'], data['rain_rate'], 'royalblue')
+        ax.fill_between(data['time'], data['rain_rate'], 0, color='royalblue', alpha=.5)
+        ax.set_ylabel("Rain Rate[mm/hr]", size=18)
+        ax.set_xlim([start_datetime, end_datetime])
+        ax.set_ylim(0, np.max(data['rain_rate']+5))
+        ax.grid()
+
+        cb = add_blank_colorbar(fig)
 
     else:
         pass
@@ -79,6 +98,10 @@ def of(data_type, data, date, name_info, realtime=False):
 
     # tighten up the layout
     plt.tight_layout()
+
+    if cb is not None:  # Need to do this after tight_layout() so things don't get wonky
+        cb.ax.axison = False
+        cb.outline.set_edgecolor((0,0,0,0))
 
     # save figure
     facility = CLAMPS_number

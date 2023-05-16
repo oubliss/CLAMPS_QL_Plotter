@@ -225,6 +225,9 @@ def yoink_the_data(dataset, name_info):
         sfc_wspd = dataset['sfc_wspd'][sort]
         sfc_wdir = dataset['sfc_wdir'][sort]
 
+        if np.max(temp) > 100:
+            temp -= 273.15
+
         # Calculate dewpoint
         def sat_vapor_pressure(T):
             """
@@ -244,9 +247,9 @@ def yoink_the_data(dataset, name_info):
         dwpt = dewpoint(rh / 100 * sat_vapor_pressure(temp))
 
         return {"time": time,
-                "temp": temp-273.15,
+                "temp": temp,
                 "rh": rh,
-                "dwpt": dwpt-273.15,
+                "dwpt": dwpt,
                 "pres": pres,
                 "pwv": pwv,
                 "lwp": lwp,

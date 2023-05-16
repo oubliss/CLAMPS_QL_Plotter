@@ -5,7 +5,16 @@ Created on Thu Oct 14 19:44:41 2021
 @author: Marshall
 """
 import numpy as np
+import matplotlib as mpl
 from datetime import datetime
+
+def add_blank_colorbar(fig):
+    cmap = (mpl.colors.ListedColormap([(0., 0., 0., 0.)]))
+    bounds = [0, 1]
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+    cb = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap))
+
+    return cb
 
 def uv_from_spd_dir(speed, wdir):
     wdir = np.deg2rad(wdir)
