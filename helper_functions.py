@@ -12,7 +12,7 @@ def add_blank_colorbar(fig):
     cmap = (mpl.colors.ListedColormap([(0., 0., 0., 0.)]))
     bounds = [0, 1]
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
-    cb = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap))
+    cb = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), alpha=0)
 
     return cb
 

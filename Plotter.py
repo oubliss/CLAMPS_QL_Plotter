@@ -287,6 +287,41 @@ def yoink_the_data(dataset, name_info):
                     "lwp": lwp
                     }
     
+    if data_type == 'housekeeping':
+
+        # get the times
+        time = [datetime.utcfromtimestamp(d) for d in (dataset['base_time'][:] + dataset['time_offset'][:])]
+        
+        # sort the times
+        sort = np.argsort(time)
+        time = np.array(time)[sort] 
+        
+        # Sometimes things get weird in the aeri netcdfs, so let's just turn off the automask... 
+        dataset.set_auto_mask(False)
+
+        if 'coolerCurrent' in dataset.variables.keys():
+
+            return  {'time': time,
+                    'shortwaveWindowAirTemp2510_2515': dataset['shortwaveWindowAirTemp2510_2515'][sort],
+                    'longwaveWindowAirTemp985_990': dataset['longwaveWindowAirTemp985_990'][sort],
+                    'surfaceLayerAirTemp675_680': dataset['surfaceLayerAirTemp675_680'][sort],
+                    'LWresponsivity': dataset['LWresponsivity'][sort],
+                    'skyViewImaginaryRadiance2510_2515': dataset['skyViewImaginaryRadiance2510_2515'][sort],
+                    'LW_HBB_NEN': dataset['LW_HBB_NEN'][sort],
+                    'calibrationHBBtemp': dataset['calibrationHBBtemp'][sort],
+                    'calibrationCBBtemp': dataset['calibrationCBBtemp'][sort],
+                    'calibrationAmbientTemp': dataset['calibrationAmbientTemp'][sort],
+                    'hatchOpen': dataset['hatchOpen'][sort],
+                    'interferometerEnclosureRelativeHumidity': dataset['interferometerEnclosureRelativeHumidity'][sort],
+                    'atmosphericRelativeHumidity': dataset['atmosphericRelativeHumidity'][sort],
+                    'detectorTemp': dataset['detectorTemp'][sort],
+                    'coolerCurrent': dataset['coolerCurrent'][sort],
+                    'airNearBBsTemp': dataset['airNearBBsTemp'][sort],
+                    'airNearInterferometerTemp': dataset['airNearInterferometerTemp'][sort],
+                    'outsideAirTemp': dataset['outsideAirTemp'][sort],
+                    'rackAmbientTemp': dataset['rackAmbientTemp'][sort]}
+
+
     # If I've made it to this point, then something went wrong....
     return -1
 

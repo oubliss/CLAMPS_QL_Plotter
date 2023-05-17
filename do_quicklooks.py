@@ -92,7 +92,7 @@ for data_type in data_types:
             # if the data doesn't have a variable, skip it and make note
             data_variable_types = data.keys()
             missing_data = []
-            print(data_variable_types)
+            # print(data_variable_types)
 
             log.info(f"    Plotting file {fn}")
             for variable in variable_types:
@@ -114,7 +114,9 @@ for data_type in data_types:
                         log.debug("  Skipping this file")
                         continue
 
-                if variable in ['thermo', 'wind', 'rain_rate', 'lwp_pwv', 'stability']:
+                if variable in ['thermo', 'wind', 'rain_rate', 'lwp_pwv', 'stability',
+                                'cooler_detector', 'system_temps', 'inside_outside_temps', 
+                                'aeri_brightness_temps']:
                     do_timeseries.of(variable, data, date, name_info, args.realtime)
                     continue
 
