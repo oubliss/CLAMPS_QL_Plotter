@@ -257,6 +257,38 @@ def yoink_the_data(dataset, name_info):
                 "wspd": sfc_wspd,
                 "wdir": sfc_wdir
                 }
+    
+    if data_type == 'mwr':
+
+        # get the times
+        time = [datetime.utcfromtimestamp(d) for d in (dataset['base_time'][:] + dataset['time_offset'][:])]
+        
+        # sort the times
+        sort = np.argsort(time)
+        time = np.array(time)[sort]
+        
+        if 'recstable1' in dataset.variables.keys():
+            # Extract the data
+            stab1 = dataset['recstable1'][sort]*1e3  # Convert to milli-Kelvin
+            stab2 = dataset['recstable2'][sort]*1e3  # Convert to milli-Kelvin
+
+            return {"time": time,
+                    "recstable1": stab1,
+                    "recstable2": stab2
+                    }
+
+        elif 'pwv' in dataset.variables.keys():
+            # Extract the data
+            pwv = dataset['pwv'][sort]
+            lwp = dataset['lwp'][sort]
+
+            return {"time": time,
+                    "pwv": pwv,
+                    "lwp": lwp
+                    }
+    
+    # If I've made it to this point, then something went wrong....
+    return -1
 
 
 

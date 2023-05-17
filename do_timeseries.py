@@ -78,6 +78,42 @@ def of(data_type, data, date, name_info, realtime=False):
         ax.grid()
 
         cb = add_blank_colorbar(fig)
+    
+    elif data_type == "lwp_pwv":
+        if 'pwv' not in data.keys():
+            plt.close()
+            return
+
+        ax2 = ax.twinx()
+        ax.plot(data['time'], data['pwv'], 'royalblue')
+        ax.set_ylabel("PWV [g/m2]", size=18)
+        ax.set_ylim(0, 50)
+
+        ax2.plot(data['time'], data['lwp'], 'crimson')
+        ax2.set_ylabel("LWP [kg/m2]", size=18)
+        ax2.set_ylim(-50, 250)
+
+        ax.set_xlim([start_datetime, end_datetime])
+        ax.grid()
+
+        ax2.tick_params(axis='y', labelsize=16)
+
+        # cb, kwargs = cbar.make_axes(ax)
+        cb = add_blank_colorbar(fig)
+
+    elif data_type == "stability":
+        if 'recstable1' not in data.keys():
+            plt.close()
+            return
+
+        ax.plot(data['time'], data['recstable1'], 'crimson', label="Reciever 1")
+        ax.plot(data['time'], data['recstable2'], 'royalblue', label="Reciever 2")
+        ax.legend()
+        ax.set_xlim([start_datetime, end_datetime])
+        ax.set_ylabel("Stability [mK]", size=18)
+        ax.set_ylim(0, 20)
+
+        cb = add_blank_colorbar(fig)
 
     else:
         pass

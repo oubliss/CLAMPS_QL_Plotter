@@ -79,6 +79,11 @@ for data_type in data_types:
                 continue
             
             data = Plotter.yoink_the_data(nc, name_info)
+
+            if data == -1:
+                log.error(f"Something went wrong reading {fn}...")
+                continue
+
             date = Plotter.date_from_filename(fn)
             nc.close()
 
@@ -109,7 +114,7 @@ for data_type in data_types:
                         log.debug("  Skipping this file")
                         continue
 
-                if variable in ['thermo', 'wind', 'rain_rate']:
+                if variable in ['thermo', 'wind', 'rain_rate', 'lwp_pwv', 'stability']:
                     do_timeseries.of(variable, data, date, name_info, args.realtime)
                     continue
 

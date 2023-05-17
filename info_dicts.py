@@ -35,6 +35,12 @@ data_info = {
         'wind'        : {'name': 'MWR Tower'},
         'rain_rate'   : {'name': 'MWR Tower'},
         },
+    
+    'mwr': {
+        'lwp_pwv'     : {'name': "MWR LWP/PWV"},
+        'stability'   : {'name': "MWR Stability"}
+    },
+    
 
     }
 
@@ -45,13 +51,15 @@ file_paths = {
             'dlVAD' : f'{plot_base_dir}/clampsdlvadC1',
             'dlfp'  : f'{plot_base_dir}/clampsdlfpC1',
             'aerioe': f'{plot_base_dir}/clampsaerioeC1',
-            'tower'   : f'{plot_base_dir}/clampstowerC1'
+            'tower' : f'{plot_base_dir}/clampstowerC1',
+            'mwr'   : f'{plot_base_dir}/clampsmwrC1'
             },
         'C2':{
             'dlVAD' : f'{plot_base_dir}/clampsdlvadC2',
             'dlfp'  : f'{plot_base_dir}/clampsdlfpC2',
             'aerioe': f'{plot_base_dir}/clampsaerioeC2',
-            'tower'   : f'{plot_base_dir}/clampstowerC2'
+            'tower' : f'{plot_base_dir}/clampstowerC2',
+            'mwr'   : f'{plot_base_dir}/clampsmwrC2'
             }
         },
 
@@ -61,14 +69,18 @@ file_paths = {
                        '/raid/clamps/clamps/clamps1/processed/clampsdlvadC1.c1'],
             'dlfp'  : ['/raid/clamps/clamps/clamps1/ingested/clampsdlfpC1.b1'],
             'aerioe': ['/raid/clamps/clamps/clamps1/realtime/clampsaerioe1turnC1.c1'],
-            'tower': ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1']
+            'tower' : ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1'], 
+            'mwr'   : ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1',
+                       '/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a0'], 
             },
         'C2':{
             'dlVAD' : ['/raid/clamps/clamps/clamps2/processed/clampsdlvad1turnC2.c1',
                        '/raid/clamps/clamps/clamps2/processed/clampsdlvadC2.c1'],
             'dlfp'  : ['/raid/clamps/clamps/clamps2/ingested/clampsdlfpC2.b1'],
             'aerioe': ['/raid/clamps/clamps/clamps2/realtime/clampsaerioe1turnC2.c1'],
-            'tower': ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1']
+            'tower' : ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1'],
+            'mwr'   : ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1',
+                       '/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a0']
             }
         },
 
