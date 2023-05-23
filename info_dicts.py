@@ -10,20 +10,6 @@ Created on Thu Oct 14 18:56:36 2021
 plot_base_dir = "/Users/clamps/data/plots"
 
 data_info = {
-
-    'dlVAD' : {
-        'wSpd'    : {'name': 'Wind Speed', 'datamax':30,  'datamin':0},
-        'wDir'    : {'name': 'Wind Direction', 'datamax':360, 'datamin':0}
-        },
-
-    'dlfp'  : {
-        'w_hs'       : {'name': 'Vertical Velocity (High Sensitivity)', 'datamax': 2, 'datamin': -2},
-        'w_ls'       : {'name': 'Vertical Velocity (Low Sensitivity)', 'datamax': 5, 'datamin': -5},
-        'bSc'        : {'name': 'Backscatter', 'datamax': -3, 'datamin': -8},
-        'bSc_TALL'   : {'name': 'Backscatter -- Full Range', 'datamax': -3, 'datamin': -8},
-        'snr'        : {'name': 'Intensity', 'datamax': 1.6, 'datamin': 1}
-        },
-
     'aerioe': {
         'ptemp'      : {'name': 'Potential Temperature', 'datamax': 320, 'datamin':290},
         'temp'       : {'name': 'Temperature', 'datamax': 30, 'datamin': -20},
@@ -47,7 +33,20 @@ data_info = {
         'system_temps'          : {'name': "AERI System Temps"},
         'inside_outside_temps'  : {'name': "AERI Inside/Outside Temps"},
         'aeri_brightness_temps' : {'name': "AERI Brightness Temps"}
-    }
+    },
+
+    'dlVAD' : {
+        'wSpd'    : {'name': 'Wind Speed', 'datamax':30,  'datamin':0},
+        'wDir'    : {'name': 'Wind Direction', 'datamax':360, 'datamin':0}
+        },
+
+    'dlfp'  : {
+        'w_hs'       : {'name': 'Vertical Velocity (High Sensitivity)', 'datamax': 2, 'datamin': -2},
+        'w_ls'       : {'name': 'Vertical Velocity (Low Sensitivity)', 'datamax': 5, 'datamin': -5},
+        'bSc'        : {'name': 'Backscatter', 'datamax': -3, 'datamin': -8},
+        'bSc_TALL'   : {'name': 'Backscatter -- Full Range', 'datamax': -3, 'datamin': -8},
+        'snr'        : {'name': 'Intensity', 'datamax': 1.6, 'datamin': 1}
+        },
     
 
     }
