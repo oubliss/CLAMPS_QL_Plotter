@@ -6,8 +6,7 @@ Created on Thu Oct 14 18:56:36 2021
 """
 
 # plot_base_dir = "/raid/clamps/reprocessing/quicklooks/"
-#plot_base_dir = "/www/apps.nssl.noaa.gov/clamps-test/CLAMPS_website/plots"
-plot_base_dir = "/Users/clamps/data/plots"
+plot_base_dir = "/www/apps.nssl.noaa.gov/clamps-test/CLAMPS_website/plots"
 
 data_info = {
 
@@ -75,24 +74,24 @@ file_paths = {
 
     'data':{
         'C1':{
-            'dlVAD' : ['/Users/clamps/data/processed/clampsdlvad1turnC1.c1',
-                       '/Users/clamps/data/processed/clampsdlvadC1.c1'],
-            'dlfp'  : ['/Users/clamps/data/ingested/clampsdlfpC1.b1'],
-            'aerioe': ['/Users/clamps/data/realtime/clampsaerioe1turnC1.c1'],
-            'tower' : ['/Users/clamps/data/ingested/clampsmwrC1.a1'], 
-            'mwr'   : ['/Users/clamps/data/ingested/clampsmwrC1.a1',
-                       '/Users/clamps/data/ingested/clampsmwrC1.a0'], 
-            'housekeeping': ['/Users/clamps/data/ingested/clampsaerisummaryC1.b1']
+            'dlVAD' : ['/raid/clamps/clamps/clamps1/processed/clampsdlvad1turnC1.c1',
+                       '/raid/clamps/clamps/clamps1/processed/clampsdlvadC1.c1'],
+            'dlfp'  : ['/raid/clamps/clamps/clamps1/ingested/clampsdlfpC1.b1'],
+            'aerioe': ['/raid/clamps/clamps/clamps1/realtime/clampsaerioe1turnC1.c1'],
+            'tower' : ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1'], 
+            'mwr'   : ['/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a1',
+                       '/raid/clamps/clamps/clamps1/ingested/clampsmwrC1.a0'], 
+            'housekeeping': ['/raid/clamps/clamps/clamps1/ingested/clampsaerisummaryC1.b1']
             },
         'C2':{
-            'dlVAD' : ['/Users/clamps/data/processed/clampsdlvad1turnC2.c1',
-                       '/Users/clamps/data/processed/clampsdlvadC2.c1'],
-            'dlfp'  : ['/Users/clamps/data/ingested/clampsdlfpC2.b1'],
-            'aerioe': ['/Users/clamps/data/realtime/clampsaerioe1turnC2.c1'],
-            'tower' : ['/Users/clamps/data/ingested/clampsmwrC2.a1'],
-            'mwr'   : ['/Users/clamps/data/ingested/clampsmwrC2.a1',
-                       '/Users/clamps/data/ingested/clampsmwrC2.a0'], 
-            'housekeeping': ['/Users/clamps/data/ingested/clampsaerisummaryC2.b1']
+            'dlVAD' : ['/raid/clamps/clamps/clamps2/processed/clampsdlvad1turnC2.c1',
+                       '/raid/clamps/clamps/clamps2/processed/clampsdlvadC2.c1'],
+            'dlfp'  : ['/raid/clamps/clamps/clamps2/ingested/clampsdlfpC2.b1'],
+            'aerioe': ['/raid/clamps/clamps/clamps2/realtime/clampsaerioe1turnC2.c1'],
+            'tower' : ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1'],
+            'mwr'   : ['/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a1',
+                       '/raid/clamps/clamps/clamps2/ingested/clampsmwrC2.a0'], 
+            'housekeeping': ['/raid/clamps/clamps/clamps2/ingested/clampsaerisummaryC2.b1']
             }
         },
 
