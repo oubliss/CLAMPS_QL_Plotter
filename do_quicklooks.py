@@ -74,11 +74,11 @@ for data_type in data_types:
             name_info = [CLAMPS_number, data_type]
             try:
                 nc = Dataset(fn)
-            except OSError:
+                data = Plotter.yoink_the_data(nc, name_info)
+            except Exception:
                 log.critical(f"Error opening file {fn}")
                 continue
             
-            data = Plotter.yoink_the_data(nc, name_info)
 
             if data == -1:
                 log.error(f"Something went wrong reading {fn}...")
